@@ -39,11 +39,11 @@ volatile static unsigned char command_ready;
 #define TRUE 1
 #define FALSE 0
 
-volatile static uint8_t ignore = FALSE;
+volatile uint8_t ignore = TRUE;
 
-volatile static uint16_t lastCmdCount =0;
+volatile uint16_t lastCmdCount =0;
 
-volatile static uint8_t misschien =30;	
+volatile uint8_t misschien =30;	
 
 volatile uint8_t b1_geel_aan = FALSE;
 volatile uint8_t b1_oranje_aan = FALSE;
@@ -53,7 +53,7 @@ volatile uint8_t b2_geel_aan = FALSE;
 volatile uint8_t b2_oranje_aan = FALSE;
 volatile uint8_t b2_reset = 0;
 
-uint8_t eAddress = 0;
+unsigned char eAddress = 0;
 
 void USART_Init(void)
 {
@@ -92,7 +92,7 @@ void processCommand(void) {
 		PORTB = ALL_LED_PINS;
 	}
 	
-	ignore = FALSE;
+	ignore = TRUE;
 }
 
 void putCharToBuffer(unsigned char c) {
@@ -105,9 +105,9 @@ void putCharToBuffer(unsigned char c) {
 		ignore = TRUE;
 	}
 	
-	if (data_count == 0 && c != eAddress) {
+	if (data_count == 0 && c == eAddress) {
 		// wrong address
-		ignore = TRUE;
+		ignore = FALSE;
 	}
 
 	rx_buffer[data_count++] = c;
@@ -122,9 +122,9 @@ void putCharToBuffer(unsigned char c) {
 			// process command
 			processCommand();
 		}
-		ignore = FALSE;
+		ignore = TRUE;
 		resetBuffer();
-		lastCmdCount = 2048;
+		lastCmdCount = 8192;
 	}
 }
 
@@ -231,7 +231,7 @@ int main(void)
 		//TODO:: Please write your application code
 		if (doNothingTime > 0) {
 			doNothingTime--;
-			} else {
+		} else {
 			if (misschien ==  RANDOMNESS || tel_aan > 0 || ( b1_geel_aan > 0  || b2_geel_aan > 0 || b1_oranje_aan > 0 || b2_oranje_aan > 0) ) {
 				
 				if (tel_aan > 0) {
