@@ -128,9 +128,9 @@ void putCharToBuffer(unsigned char c) {
 			ignore = TRUE;
 			resetBuffer();
 			lastCmdCount = 8192;
-		} else {
-			endOfCommand = false;
 		}
+	} else {
+		endOfCommand = false;
 	}
 	if (c == '\n') { // End of line!
 		endOfCommand = true;
